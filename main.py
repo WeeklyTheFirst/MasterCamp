@@ -91,7 +91,7 @@ def URL_Analyse() :
     print(results)
 
 def get_results(response) :
-    found = re.search('"harmless":(.+?),', response).group(0) #group(0) will return full matched string, group(1) only the string between
+    found = re.search('"harmless":(.+?),', response).group(0) #group(0) donnera le string et ses marqueurs, group(1) envoie uniquement le string entre les marqueurs
     found = found + "\n" + re.search('"malicious":(.+?),', response).group(0)
     found = found + "\n" + re.search('"suspicious":(.+?),', response).group(0)
     found = found + "\n" + re.search('"undetected":(.+?),', response).group(0)
