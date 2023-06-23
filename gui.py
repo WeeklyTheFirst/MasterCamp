@@ -36,45 +36,52 @@ def Read_id(response) :
     found = re.search('"id": "(.+?)",', response).group(1) #group(0) will return full matched string, group(1) only the string between
     return found
 
-def URL_Analyse(link):
+def URL_Analyse() :
+
     url = "https://www.virustotal.com/api/v3/urls"
     ans = "url="
-    ans = ans + link
+    ans = ans + input("quel est l'URL à analyser ?")
     payload = ans
     headers = {
         "accept": "application/json",
         "x-apikey": "0804a81061b66b0775a83ea6d2877e465677be0ec9e70a9727965d62a468196f",
         "content-type": "application/x-www-form-urlencoded"
     }
+
     response = requests.post(url, data=payload, headers=headers)
 
     print(response.text)
+    Analyse(response,2)
 
+def get_results(response,type) :
+    if type == 2:
+        found = re.search('"harmless":(.+?),', response).group(0) #group(0) donnera le string et ses marqueurs, group(1) envoie uniquement le string entre les marqueurs
+        found = found + "\n" + re.search('"malicious":(.+?),', response).group(0)
+        found = found + "\n" + re.search('"suspicious":(.+?),', response).group(0)
+        found = found + "\n" + re.search('"undetected":(.+?),', response).group(0)
+    else:
+        found = re.search('"harmless":(.+?),', response).group(0)
+        found = found + "\n" + re.search('"malicious":(.+?),', response).group(0)
+        found = found + "\n" + re.search('"suspicious":(.+?),', response).group(0)
+        found = found + "\n" + re.search('"undetected":(.+?)\n', response).group(0)
+    return found
+    
+def Analyse(response, type):
     id = Read_id(response.text)
     id_request = "https://www.virustotal.com/api/v3/analyses/"
     id_request = id_request + id
 
     headers = {
-        "accept": "application/json",
-        "x-apikey": "0804a81061b66b0775a83ea6d2877e465677be0ec9e70a9727965d62a468196f"
+    "accept": "application/json",
+    "x-apikey": "0804a81061b66b0775a83ea6d2877e465677be0ec9e70a9727965d62a468196f"
     }
 
     response = requests.get(id_request, headers=headers)
 
-    #print(response.text)
+    print(response.text)
 
-    results = get_results(response.text)
-    messagebox.showinfo("Résultats d'analyse", str(results))
-    #print(results)
-
-
-def get_results(response):
-    found = re.search('"harmless":(.+?),', response).group(0)
-    found = found + "\n" + re.search('"malicious":(.+?),', response).group(0)
-    found = found + "\n" + re.search('"suspicious":(.+?),', response).group(0)
-    found = found + "\n" + re.search('"undetected":(.+?),', response).group(0)
-    return found
-
+    results = get_results(response.text,type)
+    print(results)
 
 # ANALYSE FILES !!
 
