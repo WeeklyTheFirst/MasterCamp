@@ -40,7 +40,7 @@ def URL_Analyse(link) :
 
     url = "https://www.virustotal.com/api/v3/urls"
     ans = "url="
-    ans = ans + input("quel est l'URL à analyser ?")
+    ans = ans + link
     payload = ans
     headers = {
         "accept": "application/json",
@@ -50,7 +50,7 @@ def URL_Analyse(link) :
 
     response = requests.post(url, data=payload, headers=headers)
 
-    print(response.text)
+    #print(response.text)
     Analyse(response,2)
 
 
@@ -79,10 +79,10 @@ def Analyse(response, type):
 
     response = requests.get(id_request, headers=headers)
 
-    print(response.text)
+    #print(response.text)
 
     results = get_results(response.text,type)
-    print(results)
+    messagebox.showinfo("Résultat d'analyse ",str(results))
 
 
 # ANALYSE FILES !!
