@@ -90,7 +90,22 @@ def Analyse(response, type):
 
 # ANALYSE FILES !!
 
+def File_Analyse() :
+    url = "https://www.virustotal.com/api/v3/files"
+    print("séléctionnez votre fichier\n")
+    input("Pressez entrée pour continuer")
+    ans = askopenfilename()
 
+    files = {
+        "file": (path_leaf(ans), open(ans,"rb"), "application/pdf")
+    }
+    headers = {
+    "accept": "application/json",
+    "x-apikey": "0804a81061b66b0775a83ea6d2877e465677be0ec9e70a9727965d62a468196f"
+    }
+
+    response = requests.post(url, files=files, headers=headers)
+    Analyse(response,1)
 
 def analyser_fichier(file_path):
     url = "https://api.metadefender.com/v4/file/"
