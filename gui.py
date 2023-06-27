@@ -5,7 +5,6 @@ import requests
 import threading
 import time
 
-
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\33781\Desktop\CyberShield\assets\frame0")
 
@@ -13,23 +12,27 @@ ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\33781\Desktop\CyberShield\assets\fra
 result_label = None
 
 
-
 # ANALYSE URL !!!
 
 
 def open_link_window2():
     link_window = Toplevel(window)
-    link_window.geometry("900x500")
-    link_window.title("Entrer un lien URL")
+    link_window.geometry("1200x200")
+    link_window.title("SCAN URL")
+    link_window.configure(bg="#F0F0F0")  # Couleur de fond de la fenêtre
+    icon = Path(r"C:\Users\33781\Desktop\CyberShield\assets\frame0\logo.ico")
+    link_window.iconbitmap(icon)
 
-    label = Label(link_window, text="Rentre l'URL", font=("Arial", 14))
+    label = Label(link_window, text="Rentre l'URL à scanner", font=("Arial", 14), bg="#F0F0F0")  # Couleur de fond du label
     label.pack(pady=20)
 
-    link_textarea = Text(link_window, width=80, height=10)
+    link_textarea = Text(link_window, width=100, height=3)
     link_textarea.pack()
 
     submit_button = Button(link_window, text="Analyser", command=lambda: [URL_Analyse(link_textarea.get("1.0", "end-1c")), link_window.destroy()], bg="#4CAF50", fg="white", padx=10, pady=5)
     submit_button.pack(pady=20)
+
+    link_window.mainloop()
 
 
 def Read_id(response) :
@@ -163,10 +166,14 @@ def select_files_to_analyze():
             analyze_file(filepath)
 
 
+
 window = Tk()
 
+icon_path= Path(r"C:\Users\33781\Desktop\CyberShield\assets\frame0\logo.ico")
 window.geometry("880x487")
 window.configure(bg="#3F3B3B")
+window.title("CyberShield Antivirus")
+window.iconbitmap(icon_path)
 
 canvas = Canvas(
     window,
@@ -257,6 +264,8 @@ def open_thankyou_window():
     thankyou_window = Toplevel(window)
     thankyou_window.geometry("600x200")
     thankyou_window.title("Merci")
+    icon = Path(r"C:\Users\33781\Desktop\CyberShield\assets\frame0\logo.ico")
+    thankyou_window.iconbitmap(icon)
 
     message_label = Label(thankyou_window, text="Merci d'utiliser notre antivirus CyberShield !", font=("Arial", 16))
     message_label.pack(pady=50)
