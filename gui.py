@@ -90,6 +90,10 @@ def Analyse(response, type):
 
 # ANALYSE FILES !!
 
+def path_leaf(path):
+    head, tail = ntpath.split(path)
+    return tail or ntpath.basename(head)
+
 def File_Analyse() :
     url = "https://www.virustotal.com/api/v3/files"
     print("séléctionnez votre fichier\n")
