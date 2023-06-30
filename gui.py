@@ -1,3 +1,4 @@
+import ntpath
 from pathlib import Path
 from tkinter import Tk, Canvas, Button, PhotoImage, Toplevel, Text, Label, filedialog, messagebox
 import re
@@ -23,13 +24,13 @@ def open_link_window2():
     icon = Path(r"C:\Users\33781\Desktop\CyberShield\assets\frame0\logo.ico")
     link_window.iconbitmap(icon)
 
-    label = Label(link_window, text="Rentre l'URL à scanner", font=("Arial", 14), bg="#F0F0F0")  # Couleur de fond du label
+    label = Label(link_window, text="Enter URL to scan", font=("Arial", 14), bg="#F0F0F0")  # Couleur de fond du label
     label.pack(pady=20)
 
     link_textarea = Text(link_window, width=100, height=3)
     link_textarea.pack()
 
-    submit_button = Button(link_window, text="Analyser", command=lambda: [URL_Analyse(link_textarea.get("1.0", "end-1c")), link_window.destroy()], bg="#4CAF50", fg="white", padx=10, pady=5)
+    submit_button = Button(link_window, text="Analyze", command=lambda: [URL_Analyse(link_textarea.get("1.0", "end-1c")), link_window.destroy()], bg="#4CAF50", fg="white", padx=10, pady=5)
     submit_button.pack(pady=20)
 
     link_window.mainloop()
@@ -85,8 +86,25 @@ def Analyse(response, type):
     #print(response.text)
 
     results = get_results(response.text,type)
-    messagebox.showinfo("Résultat d'analyse ",str(results))
+    messagebox.showinfo("Result of Analyze ",str(results))
 
+
+def Analyse2(response, type):
+    id = Read_id(response.text)
+    id_request = "https://www.virustotal.com/api/v3/analyses/"
+    id_request = id_request + id
+
+    headers = {
+    "accept": "application/json",
+    "x-apikey": "0804a81061b66b0775a83ea6d2877e465677be0ec9e70a9727965d62a468196f"
+    }
+
+    response = requests.get(id_request, headers=headers)
+
+    #print(response.text)
+
+    results = get_results(response.text,type)
+    return results
 
 # ANALYSE FILES !!
 
@@ -94,14 +112,12 @@ def path_leaf(path):
     head, tail = ntpath.split(path)
     return tail or ntpath.basename(head)
 
-def File_Analyse() :
+
+def File_Analyse(Files) :
     url = "https://www.virustotal.com/api/v3/files"
-    print("séléctionnez votre fichier\n")
-    input("Pressez entrée pour continuer")
-    ans = askopenfilename()
 
     files = {
-        "file": (path_leaf(ans), open(ans,"rb"), "application/pdf")
+        "file": (path_leaf(Files), open(Files,"rb"), "application/pdf")
     }
     headers = {
     "accept": "application/json",
@@ -109,9 +125,13 @@ def File_Analyse() :
     }
 
     response = requests.post(url, files=files, headers=headers)
-    Analyse(response,1)
+    return str(Analyse2(response,1))
+
+
 
 def analyser_fichier(file_path):
+
+
     url = "https://api.metadefender.com/v4/file/"
     api_key = "b99e1ba51b33444d8ab462ac16ee4e04"
 
@@ -151,7 +171,8 @@ def analyser_fichier(file_path):
 
                     if scan_all_result == "No Threat Detected":
                         engine_count = len(scan_results["scan_details"])
-                        messagebox.showinfo("Résultat d'analyse","Le fichier est sécurisé. \nNous avons utilisé " + str(engine_count) + " antivirus pour trouver ce résultat")
+                        a= File_Analyse(file_path)
+                        messagebox.showinfo(" Résultat d'analyse","D'après Metadefender : \nLe fichier est sécurisé. \nMetadefender utilise " + str(engine_count) + " antivirus pour trouver ce résultat \n\n D'après Virus Total : \n" + a)
 
                     else:
                         messagebox.showinfo("Résultats d'analyse","Le fichier n'est pas sécurisé. Résultat de l'analyse :" + str(scan_all_result))
@@ -174,7 +195,7 @@ def analyze_file(filepath):
     try:
         threading.Thread(target=analyser_fichier, args=(filepath,), daemon=True).start()
     except Exception as e:
-        messagebox.showerror("Erreur", str(e))
+        messagebox.showerror("Error", str(e))
 
 
 def select_files_to_analyze():
@@ -184,7 +205,15 @@ def select_files_to_analyze():
         for filepath in files:
             analyze_file(filepath)
 
+def open_thankyou_window():
+    thankyou_window = Toplevel(window)
+    thankyou_window.geometry("600x200")
+    thankyou_window.title("Thanks")
+    icon = Path(r"C:\Users\33781\Desktop\CyberShield\assets\frame0\logo.ico")
+    thankyou_window.iconbitmap(icon)
 
+    message_label = Label(thankyou_window, text="Thanks for use CyberShield", font=("Arial", 16))
+    message_label.pack(pady=50)
 
 window = Tk()
 
@@ -194,17 +223,18 @@ window.configure(bg="#3F3B3B")
 window.title("CyberShield Antivirus")
 window.iconbitmap(icon_path)
 
+
 canvas = Canvas(
     window,
-    bg="#3F3B3B",
-    height=487,
-    width=880,
-    bd=0,
-    highlightthickness=0,
-    relief="ridge"
+    bg = "#3F3B3B",
+    height = 487,
+    width = 880,
+    bd = 0,
+    highlightthickness = 0,
+    relief = "ridge"
 )
 
-canvas.place(x=0, y=0)
+canvas.place(x = 0, y = 0)
 canvas.create_text(
     200.0,
     14.0,
@@ -220,7 +250,7 @@ button_1 = Button(
     image=button_image_1,
     borderwidth=0,
     highlightthickness=0,
-    command=open_link_window2,
+    command=lambda: print("button_3 clicked"),
     relief="flat"
 )
 button_1.place(
@@ -236,7 +266,7 @@ button_2 = Button(
     image=button_image_2,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: print("button_2 clicked"),
+    command=open_link_window2,
     relief="flat"
 )
 button_2.place(
@@ -252,10 +282,26 @@ button_3 = Button(
     image=button_image_3,
     borderwidth=0,
     highlightthickness=0,
-    command=select_files_to_analyze,
+    command=lambda: print("button_3 clicked"),
     relief="flat"
 )
 button_3.place(
+    x=578.0,
+    y=366.0,
+    width=276.0,
+    height=108.0
+)
+
+button_image_4 = PhotoImage(
+    file=relative_to_assets("button_4.png"))
+button_4 = Button(
+    image=button_image_4,
+    borderwidth=0,
+    highlightthickness=0,
+    command=select_files_to_analyze,
+    relief="flat"
+)
+button_4.place(
     x=26.0,
     y=203.0,
     width=276.0,
@@ -279,32 +325,28 @@ canvas.create_text(
     font=("ArefRuqaaInk Regular", 16 * -1)
 )
 
-def open_thankyou_window():
-    thankyou_window = Toplevel(window)
-    thankyou_window.geometry("600x200")
-    thankyou_window.title("Merci")
-    icon = Path(r"C:\Users\33781\Desktop\CyberShield\assets\frame0\logo.ico")
-    thankyou_window.iconbitmap(icon)
-
-    message_label = Label(thankyou_window, text="Merci d'utiliser notre antivirus CyberShield !", font=("Arial", 16))
-    message_label.pack(pady=50)
-
-button_image_4 = PhotoImage(file=relative_to_assets("button_4.png"))
-button_4 = Button(
-    image=button_image_4,
+button_image_5 = PhotoImage(
+    file=relative_to_assets("button_5.png"))
+button_5 = Button(
+    image=button_image_5,
     borderwidth=0,
     highlightthickness=0,
     command=open_thankyou_window,
     relief="flat"
 )
-button_4.place(
+button_5.place(
     x=26.0,
     y=366.0,
-    width=828.0,
+    width=552.0,
     height=108.0
 )
 
-# Création de l'étiquette des résultats
-
+image_image_1 = PhotoImage(
+    file=relative_to_assets("image_1.png"))
+image_1 = canvas.create_image(
+    76.0,
+    73.0,
+    image=image_image_1
+)
 window.resizable(False, False)
 window.mainloop()
