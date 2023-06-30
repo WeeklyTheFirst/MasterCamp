@@ -215,6 +215,27 @@ def open_thankyou_window():
     message_label = Label(thankyou_window, text="Thanks for use CyberShield", font=("Arial", 16))
     message_label.pack(pady=50)
 
+def soon_window():
+    thankyou_window = Toplevel(window)
+    thankyou_window.geometry("600x200")
+    thankyou_window.title("Soon....")
+    icon = Path(r"C:\Users\33781\Desktop\CyberShield\assets\frame0\logo.ico")
+    thankyou_window.iconbitmap(icon)
+
+    message_label = Label(thankyou_window, text="Soon ... stay connected", font=("Arial", 16))
+    message_label.pack(pady=50)
+
+def use_extension_window():
+    thankyou_window = Toplevel(window)
+    thankyou_window.geometry("600x200")
+    thankyou_window.title("How use extension ?")
+    icon = Path(r"C:\Users\33781\Desktop\CyberShield\assets\frame0\logo.ico")
+    thankyou_window.iconbitmap(icon)
+
+    message_label = Label(thankyou_window, text="In first download files CyberExtension \n After go on Google Chrome \n ........", font=("Arial", 16))
+    message_label.pack(pady=50)
+
+
 window = Tk()
 
 icon_path= Path(r"C:\Users\33781\Desktop\CyberShield\assets\frame0\logo.ico")
@@ -250,7 +271,7 @@ button_1 = Button(
     image=button_image_1,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: print("button_3 clicked"),
+    command=soon_window,
     relief="flat"
 )
 button_1.place(
@@ -282,7 +303,7 @@ button_3 = Button(
     image=button_image_3,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: print("button_3 clicked"),
+    command=use_extension_window,
     relief="flat"
 )
 button_3.place(
