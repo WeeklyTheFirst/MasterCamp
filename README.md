@@ -1,6 +1,3 @@
-# MasterCamp
-
-RansomWare Protection with CyberShied
 #Cybershield - Projet d'antivirus Python
 ![Copy_of_Cyber-removebg-preview](https://github.com/WeeklyTheFirst/MasterCamp/assets/94228552/948264cc-9bb3-4829-ac2c-4df045fa53ff)
 
