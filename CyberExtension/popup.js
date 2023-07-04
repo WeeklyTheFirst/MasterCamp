@@ -7,7 +7,7 @@ document.getElementById("checkButton").addEventListener("click", function () {
   chrome.runtime.sendMessage({ action: "checkLink", url }, function (response) {
     if (chrome.runtime.lastError) {
       console.error(chrome.runtime.lastError);
-      displayError("Une erreur s'est produite lors de la communication avec l'extension.");
+      displayError("An error occurred while communicating with the extension.");
     } else if (response.error) {
       // En cas d'erreur dans la réponse
       displayError(response.error);
@@ -26,18 +26,18 @@ function displayResults(result) {
 
   if (result.response_code === 1) {
     // Si le code de réponse est 1, le lien est considéré comme sécurisé par VirusTotal
-    resultElement.innerHTML += "<p>Le lien est securise selon VirusTotal.</p>";
+    resultElement.innerHTML += "<p>The link is secure according to VirusTotal.</p>";
   } else if (result.response_code === -2) {
     // Si le code de réponse est -2, le lien n'a pas encore été analysé par VirusTotal
-    resultElement.innerHTML += "<p>Le lien n'a pas encore ete analyse par VirusTotal.</p>";
+    resultElement.innerHTML += "<p>The link has not yet been analyzed by VirusTotal.</p>";
   } else {
     // Dans tous les autres cas, le lien est considéré comme non sécurisé par VirusTotal
-    resultElement.innerHTML += "<p>Le lien est considere comme non securise selon VirusTotal.</p>";
+    resultElement.innerHTML += "<p>The link is considered insecure according to VirusTotal.</p>";
   }
 
   if (result.positives > 0) {
     // Si des antivirus ont détecté des problèmes avec le lien
-    resultElement.innerHTML += `<p>Antivirus positifs : ${result.positives} / ${result.total}</p>`;
+    resultElement.innerHTML += `<p>Positive Antiviruses : ${result.positives} / ${result.total}</p>`;
     const antivirusList = document.createElement("ul");
     for (const scanner in result.scans) {
       if (result.scans[scanner].detected) {
