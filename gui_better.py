@@ -5,6 +5,7 @@ import re
 import requests
 import threading
 import time
+import tkinter as tk
 from inspect import getsourcefile
 from os.path import abspath
 
