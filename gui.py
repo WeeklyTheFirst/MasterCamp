@@ -6,8 +6,21 @@ import requests
 import threading
 import time
 
+def find_path_frame():
+    path=abspath(getsourcefile(lambda:0))
+    head, tail = ntpath.split(path)
+    head = head + "\\assets\\frame0"
+    return head
+
+def find_path_logo():
+    path=abspath(getsourcefile(lambda:0))
+    head, tail = ntpath.split(path)
+    head = head + "\\assets\\frame0\logo.ico"    
+    return head
+
+
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\33781\Desktop\CyberShield\assets\frame0")
+ASSETS_PATH = OUTPUT_PATH / Path(find_path_frame())
 
 # Ajout d'une étiquette pour afficher les résultats de l'analyse
 result_label = None
@@ -21,7 +34,7 @@ def open_link_window2():
     link_window.geometry("1200x200")
     link_window.title("SCAN URL")
     link_window.configure(bg="#F0F0F0")  # Couleur de fond de la fenêtre
-    icon = Path(r"C:\Users\33781\Desktop\CyberShield\assets\frame0\logo.ico")
+    icon = Path(find_path_logo())
     link_window.iconbitmap(icon)
 
     label = Label(link_window, text="Enter URL to scan", font=("Arial", 14), bg="#F0F0F0")  # Couleur de fond du label
@@ -209,7 +222,7 @@ def open_thankyou_window():
     thankyou_window = Toplevel(window)
     thankyou_window.geometry("600x200")
     thankyou_window.title("Thanks")
-    icon = Path(r"C:\Users\33781\Desktop\CyberShield\assets\frame0\logo.ico")
+    icon = Path(find_path_logo())
     thankyou_window.iconbitmap(icon)
 
     message_label = Label(thankyou_window, text="Thanks for use CyberShield", font=("Arial", 16))
@@ -219,7 +232,7 @@ def soon_window():
     thankyou_window = Toplevel(window)
     thankyou_window.geometry("600x200")
     thankyou_window.title("Soon....")
-    icon = Path(r"C:\Users\33781\Desktop\CyberShield\assets\frame0\logo.ico")
+    icon = Path(find_path_logo())
     thankyou_window.iconbitmap(icon)
 
     message_label = Label(thankyou_window, text="Soon ... stay connected", font=("Arial", 16))
@@ -229,7 +242,7 @@ def use_extension_window():
     thankyou_window = Toplevel(window)
     thankyou_window.geometry("600x200")
     thankyou_window.title("How use extension ?")
-    icon = Path(r"C:\Users\33781\Desktop\CyberShield\assets\frame0\logo.ico")
+    icon = Path(find_path_logo())
     thankyou_window.iconbitmap(icon)
 
     message_label = Label(thankyou_window, text="In first download files CyberExtension \n After go on Google Chrome on Extension and active developper mode \n add the files CyberExtension\n The extension is ready to use", font=("Arial", 16))
@@ -238,7 +251,7 @@ def use_extension_window():
 
 window = Tk()
 
-icon_path= Path(r"C:\Users\33781\Desktop\CyberShield\assets\frame0\logo.ico")
+icon_path= Path(find_path_logo())
 window.geometry("880x487")
 window.configure(bg="#3F3B3B")
 window.title("CyberShield Antivirus")
