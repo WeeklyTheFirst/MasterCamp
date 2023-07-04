@@ -1,7 +1,10 @@
 import ntpath
+from inspect import getsourcefile
+from os.path import abspath
 from pathlib import Path
 from tkinter import Tk, Canvas, Button, PhotoImage, Toplevel, Text, Label, filedialog, messagebox
 import re
+import tkinter as tk
 import requests
 import threading
 import time
@@ -15,7 +18,7 @@ def find_path_frame():
 def find_path_logo():
     path=abspath(getsourcefile(lambda:0))
     head, tail = ntpath.split(path)
-    head = head + "\\assets\\frame0\logo.ico"    
+    head = head + "\\assets\\frame0\logo.ico"
     return head
 
 
@@ -163,6 +166,16 @@ def analyser_fichier(file_path):
                 analysis_url = url + data_id
                 analysis_result = None
 
+                # Affichage du chargement
+                popup = tk.Tk()
+                popup.title("Chargement en cours...")
+                popup.geometry("200x100")
+
+                label_loading = tk.Label(popup, text="Analyse en cours", font=("Arial", 12))
+                label_loading.pack(pady=20)
+
+                popup.update()
+
                 while True:
                     analysis_response = requests.get(analysis_url, headers=headers)
 
@@ -172,10 +185,27 @@ def analyser_fichier(file_path):
                         if analysis_result.get("scan_results", {}).get("progress_percentage") == 100:
                             break
 
-                        time.sleep(2)  # Attendre avant de vérifier l'état de nouveau
+                        # Affichage du chargement
+                        label_loading.config(text="Analyse en cours...")
+                        popup.update()  # Mise à jour de l'interface utilisateur
+                        time.sleep(0.5)
+                        label_loading.config(text="Analyse en cours.")
+                        popup.update()
+                        time.sleep(0.5)
+                        label_loading.config(text="Analyse en cours..")
+                        popup.update()
+                        time.sleep(0.5)
+                        label_loading.config(text="Analyse en cours...")
+                        popup.update()
+                        time.sleep(0.5)
                     else:
-                        print("Erreur lors de la récupération des résultats d'analyse. Code de statut :", analysis_response.status_code)
+                        popup.destroy()
+                        messagebox.showerror("Erreur",
+                                             "Erreur lors de la récupération des résultats d'analyse. Code de statut : {}".format(
+                                                 analysis_response.status_code))
                         return
+
+                popup.destroy()
 
                 scan_results = analysis_result.get("scan_results")
 
