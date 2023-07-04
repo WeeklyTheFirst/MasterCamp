@@ -232,7 +232,7 @@ def use_extension_window():
     icon = Path(r"C:\Users\33781\Desktop\CyberShield\assets\frame0\logo.ico")
     thankyou_window.iconbitmap(icon)
 
-    message_label = Label(thankyou_window, text="In first download files CyberExtension \n After go on Google Chrome \n ........", font=("Arial", 16))
+    message_label = Label(thankyou_window, text="In first download files CyberExtension \n After go on Google Chrome on Extension and active developper mode \n add the files CyberExtension\n The extension is ready to use", font=("Arial", 16))
     message_label.pack(pady=50)
 
 
@@ -371,3 +371,5 @@ image_1 = canvas.create_image(
 )
 window.resizable(False, False)
 window.mainloop()
+
+
