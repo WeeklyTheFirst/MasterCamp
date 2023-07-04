@@ -33,8 +33,8 @@ L'interface graphique de Cybershield s'ouvrira. Vous pourrez sélectionner les f
 ### Pour utiliser l'extension Chrome, suivez les étapes suivantes :
 
 Ouvrez Google Chrome et accédez à chrome://extensions.
-Activez le mode développeur en cliquant sur le bouton approprié.
-Cliquez sur "Charger l'extension non empaquetée" et sélectionnez le dossier chrome_extension du projet.
+Activez le mode développeur..
+Cliquez sur "Charger l'extension non empaquetée" et sélectionnez le dossier du projet.
 L'extension Cybershield apparaîtra dans la liste des extensions installées.
 Lorsque vous visitez une URL, cliquez sur l'extension pour envoyer l'URL à l'antivirus pour analyse.
 ## Contributions
