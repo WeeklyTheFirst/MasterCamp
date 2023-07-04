@@ -145,8 +145,6 @@ def File_Analyse(Files) :
 
 
 def analyser_fichier(file_path):
-
-
     url = "https://api.metadefender.com/v4/file/"
     api_key = "b99e1ba51b33444d8ab462ac16ee4e04"
 
@@ -165,6 +163,16 @@ def analyser_fichier(file_path):
                 analysis_url = url + data_id
                 analysis_result = None
 
+                # Affichage du chargement
+                popup = tk.Tk()
+                popup.title("Chargement en cours...")
+                popup.geometry("200x100")
+
+                label_loading = tk.Label(popup, text="Analyse en cours", font=("Arial", 12))
+                label_loading.pack(pady=20)
+
+                popup.update()
+
                 while True:
                     analysis_response = requests.get(analysis_url, headers=headers)
 
@@ -174,11 +182,29 @@ def analyser_fichier(file_path):
                         if analysis_result.get("scan_results", {}).get("progress_percentage") == 100:
                             break
 
-                        time.sleep(2)  # Attendre avant de vérifier l'état de nouveau
+                        # Affichage du chargement
+                        label_loading.config(text="Analyse en cours...")
+                        popup.update()  # Mise à jour de l'interface utilisateur
+                        time.sleep(0.5)
+                        label_loading.config(text="Analyse en cours.")
+                        popup.update()
+                        time.sleep(0.5)
+                        label_loading.config(text="Analyse en cours..")
+                        popup.update()
+                        time.sleep(0.5)
+                        label_loading.config(text="Analyse en cours...")
+                        popup.update()
+                        time.sleep(0.5)
                     else:
-                        print("Erreur lors de la récupération des résultats d'analyse. Code de statut :", analysis_response.status_code)
+                        popup.destroy()
+                        messagebox.showerror("Erreur",
+                                             "Erreur lors de la récupération des résultats d'analyse. Code de statut : {}".format(
+                                                 analysis_response.status_code))
                         return
 
+                popup.destroy()
+
+                # Reste du code pour traiter les résultats de l'analyse
                 scan_results = analysis_result.get("scan_results")
 
                 if scan_results:
@@ -186,19 +212,19 @@ def analyser_fichier(file_path):
 
                     if scan_all_result == "No Threat Detected":
                         engine_count = len(scan_results["scan_details"])
-                        a= File_Analyse(file_path)
-                        messagebox.showinfo(" Résultat d'analyse","D'après Metadefender : \nLe fichier est sécurisé. \nMetadefender utilise " + str(engine_count) + " antivirus pour trouver ce résultat \n\n D'après Virus Total : \n" + a)
-
+                        messagebox.showinfo("Résultat d'analyse",
+                                            "Le fichier est sécurisé. \nNous avons utilisé " + str(engine_count) + " antivirus pour trouver ce résultat")
                     else:
-                        messagebox.showinfo("Résultats d'analyse","Le fichier n'est pas sécurisé. Résultat de l'analyse :" + str(scan_all_result))
+                        messagebox.showinfo("Résultats d'analyse",
+                                            "Le fichier n'est pas sécurisé. Résultat de l'analyse :" + str(scan_all_result))
                 else:
-                    messagebox.showinfo("Résultats d'analyse","Impossible d'obtenir les résultats de l'analyse.")
+                    messagebox.showinfo("Résultats d'analyse", "Impossible d'obtenir les résultats de l'analyse.")
             else:
-                messagebox.showinfo("Résultats d'analyse","Impossible d'obtenir l'ID des données à analyser.")
+                messagebox.showinfo("Résultats d'analyse", "Impossible d'obtenir l'ID des données à analyser.")
         else:
-            messagebox.showinfo("Résultats d'analyse","Erreur lors de l'appel à l'API Metadefender. Code de statut :" + str(response.status_code))
+            messagebox.showinfo("Résultats d'analyse", "Erreur lors de l'appel à l'API Metadefender. Code de statut :" + str(response.status_code))
     except IOError:
-        messagebox.showinfo("Résultats d'analyse","Erreur lors de la lecture du fichier.")
+        messagebox.showinfo("Résultats d'analyse", "Erreur lors de la lecture du fichier.")
 
 
 def relative_to_assets(path: str) -> Path:
