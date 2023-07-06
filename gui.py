@@ -1,29 +1,15 @@
 import ntpath
-from inspect import getsourcefile
-from os.path import abspath
 from pathlib import Path
 from tkinter import Tk, Canvas, Button, PhotoImage, Toplevel, Text, Label, filedialog, messagebox
 import re
-import tkinter as tk
 import requests
 import threading
 import time
-
-def find_path_frame():
-    path=abspath(getsourcefile(lambda:0))
-    head, tail = ntpath.split(path)
-    head = head + "\\assets\\frame0"
-    return head
-
-def find_path_logo():
-    path=abspath(getsourcefile(lambda:0))
-    head, tail = ntpath.split(path)
-    head = head + "\\assets\\frame0\logo.ico"
-    return head
+import tkinter as tk
 
 
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path(find_path_frame())
+ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\33781\Desktop\CyberShield\assets\frame0")
 
 # Ajout d'une étiquette pour afficher les résultats de l'analyse
 result_label = None
@@ -37,7 +23,7 @@ def open_link_window2():
     link_window.geometry("1200x200")
     link_window.title("SCAN URL")
     link_window.configure(bg="#F0F0F0")  # Couleur de fond de la fenêtre
-    icon = Path(find_path_logo())
+    icon = Path(r"C:\Users\33781\Desktop\CyberShield\assets\frame0\logo.ico")
     link_window.iconbitmap(icon)
 
     label = Label(link_window, text="Enter URL to scan", font=("Arial", 14), bg="#F0F0F0")  # Couleur de fond du label
@@ -69,7 +55,6 @@ def URL_Analyse(link) :
     }
 
     response = requests.post(url, data=payload, headers=headers)
-
     #print(response.text)
     Analyse(response,2)
 
@@ -96,13 +81,15 @@ def Analyse(response, type):
     "accept": "application/json",
     "x-apikey": "0804a81061b66b0775a83ea6d2877e465677be0ec9e70a9727965d62a468196f"
     }
-
     response = requests.get(id_request, headers=headers)
 
     #print(response.text)
+    while verif_queued(response.text)==1:
+        time.sleep(1)
+        response = requests.get(id_request, headers=headers)
 
     results = get_results(response.text,type)
-    messagebox.showinfo("Result of Analyze ",str(results))
+    messagebox.showinfo("Result of Analysis ",str(results))
 
 
 def Analyse2(response, type):
@@ -118,8 +105,12 @@ def Analyse2(response, type):
     response = requests.get(id_request, headers=headers)
 
     #print(response.text)
+    while verif_queued(response.text)==1:
+        time.sleep(1)
+        response = requests.get(id_request, headers=headers)
 
-    results = get_results(response.text,type)
+    results = get_results(response.text, type)
+
     return results
 
 # ANALYSE FILES !!
@@ -143,8 +134,6 @@ def File_Analyse(Files) :
     response = requests.post(url, files=files, headers=headers)
     return str(Analyse2(response,1))
 
-
-
 def analyser_fichier(file_path):
 
 
@@ -154,6 +143,8 @@ def analyser_fichier(file_path):
     headers = {
         "apikey": api_key
     }
+
+    a = File_Analyse(file_path)
 
     try:
         with open(file_path, "rb") as file:
@@ -168,10 +159,10 @@ def analyser_fichier(file_path):
 
                 # Affichage du chargement
                 popup = tk.Tk()
-                popup.title("Chargement en cours...")
+                popup.title("Loading...")
                 popup.geometry("200x100")
 
-                label_loading = tk.Label(popup, text="Analyse en cours", font=("Arial", 12))
+                label_loading = tk.Label(popup, text="Analysis in progress", font=("Arial", 12))
                 label_loading.pack(pady=20)
 
                 popup.update()
@@ -186,22 +177,22 @@ def analyser_fichier(file_path):
                             break
 
                         # Affichage du chargement
-                        label_loading.config(text="Analyse en cours...")
+                        label_loading.config(text="Analysis in progress...")
                         popup.update()  # Mise à jour de l'interface utilisateur
                         time.sleep(0.5)
-                        label_loading.config(text="Analyse en cours.")
+                        label_loading.config(text="Analysis in progress.")
                         popup.update()
                         time.sleep(0.5)
-                        label_loading.config(text="Analyse en cours..")
+                        label_loading.config(text="Analysis in progress..")
                         popup.update()
                         time.sleep(0.5)
-                        label_loading.config(text="Analyse en cours...")
+                        label_loading.config(text="Analysis in progress...")
                         popup.update()
                         time.sleep(0.5)
                     else:
                         popup.destroy()
-                        messagebox.showerror("Erreur",
-                                             "Erreur lors de la récupération des résultats d'analyse. Code de statut : {}".format(
+                        messagebox.showerror("Error",
+                                             "Error retrieving scan results. Status code: {}".format(
                                                  analysis_response.status_code))
                         return
 
@@ -214,20 +205,25 @@ def analyser_fichier(file_path):
 
                     if scan_all_result == "No Threat Detected":
                         engine_count = len(scan_results["scan_details"])
-                        a= File_Analyse(file_path)
-                        messagebox.showinfo(" Résultat d'analyse","D'après Metadefender : \nLe fichier est sécurisé. \nMetadefender utilise " + str(engine_count) + " antivirus pour trouver ce résultat \n\n D'après Virus Total : \n" + a)
+                        messagebox.showinfo(" Analysis result","According to Metadefender: \nThe file is secure. \nMetadefender use " + str(engine_count) + " antivirus to find this result \n\nAccording to Virus Total : \n" + a)
 
                     else:
-                        messagebox.showinfo("Résultats d'analyse","Le fichier n'est pas sécurisé. Résultat de l'analyse :" + str(scan_all_result))
+                        messagebox.showinfo("Analysis result","The file is not secure. Scan result :" + str(scan_all_result))
                 else:
-                    messagebox.showinfo("Résultats d'analyse","Impossible d'obtenir les résultats de l'analyse.")
+                    messagebox.showinfo("Analysis result","Unable to get scan results.")
             else:
-                messagebox.showinfo("Résultats d'analyse","Impossible d'obtenir l'ID des données à analyser.")
+                messagebox.showinfo("Analysis result","Failed to get the ID of the data to analyze.")
         else:
-            messagebox.showinfo("Résultats d'analyse","Erreur lors de l'appel à l'API Metadefender. Code de statut :" + str(response.status_code))
+            messagebox.showinfo("Analysis result","Error calling Metadefender API. Status code:" + str(response.status_code))
     except IOError:
-        messagebox.showinfo("Résultats d'analyse","Erreur lors de la lecture du fichier.")
+        messagebox.showinfo("Analysis result","Error reading file.")
 
+
+def verif_queued(response):
+     if re.search('"status": "(.+?)",', response).group(1)=="queued":
+         return 1
+     else :
+         return 0
 
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
@@ -252,17 +248,17 @@ def open_thankyou_window():
     thankyou_window = Toplevel(window)
     thankyou_window.geometry("600x200")
     thankyou_window.title("Thanks")
-    icon = Path(find_path_logo())
+    icon = Path(r"C:\Users\33781\Desktop\CyberShield\assets\frame0\logo.ico")
     thankyou_window.iconbitmap(icon)
 
-    message_label = Label(thankyou_window, text="Thanks for use CyberShield", font=("Arial", 16))
+    message_label = Label(thankyou_window, text="Thank you for using CyberShield.", font=("Arial", 16))
     message_label.pack(pady=50)
 
 def soon_window():
     thankyou_window = Toplevel(window)
     thankyou_window.geometry("600x200")
     thankyou_window.title("Soon....")
-    icon = Path(find_path_logo())
+    icon = Path(r"C:\Users\33781\Desktop\CyberShield\assets\frame0\logo.ico")
     thankyou_window.iconbitmap(icon)
 
     message_label = Label(thankyou_window, text="Soon ... stay connected", font=("Arial", 16))
@@ -270,18 +266,30 @@ def soon_window():
 
 def use_extension_window():
     thankyou_window = Toplevel(window)
-    thankyou_window.geometry("600x200")
-    thankyou_window.title("How use extension ?")
-    icon = Path(find_path_logo())
+    thankyou_window.geometry("1200x400")
+    thankyou_window.title("How to use an extension ?")
+    icon = Path(r"C:\Users\33781\Desktop\CyberShield\assets\frame0\logo.ico")
     thankyou_window.iconbitmap(icon)
 
-    message_label = Label(thankyou_window, text="In first download files CyberExtension \n After go on Google Chrome on Extension and active developper mode \n add the files CyberExtension\n The extension is ready to use", font=("Arial", 16))
+    message_label = Label(
+        thankyou_window,
+        text="1. Download the CyberExtension files to your computer.\n"
+             "2. Open Google Chrome and go to the Extensions page.\n"
+             "3. Enable Developer Mode by toggling the switch at the top of the Extensions page.\n"
+             "4. Add the CyberExtension files to your browser:\n"
+             "   -  Drag and drop the files directly onto the Extensions page.\n"
+             "   -  Click on the Load unpacked button (or similar) and select the CyberExtension files from your computer.\n"
+             "5. Once the files are added, the CyberExtension is ready to use in your browser.\n\n"
+             "Make sure to follow these steps in order to successfully launch your extension.",
+        font=("Arial", 16),
+        justify="left"  # Aligns the text to the left
+    )
     message_label.pack(pady=50)
 
 
 window = Tk()
 
-icon_path= Path(find_path_logo())
+icon_path= Path(r"C:\Users\33781\Desktop\CyberShield\assets\frame0\logo.ico")
 window.geometry("880x487")
 window.configure(bg="#3F3B3B")
 window.title("CyberShield Antivirus")
@@ -414,5 +422,4 @@ image_1 = canvas.create_image(
 )
 window.resizable(False, False)
 window.mainloop()
-
 
